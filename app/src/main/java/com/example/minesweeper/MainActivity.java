@@ -11,15 +11,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private int clock = 0;
     private boolean running = false;
     private static final int COLUMN_COUNT = 8;
+    private static final int BOMB_COUNT = 4;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
+    private Board board = new Board();
     private ArrayList<TextView> cell_tvs;
+    private List<List<Block>> blocks = board.getBlocks();
 
     private int dpToPixel(int dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -33,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
         cell_tvs = new ArrayList<TextView>();
         GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
-        // Method (3): add four dynamically created cells with LayoutInflater
         LayoutInflater li = LayoutInflater.from(this);
-        for (int i = 3; i<=12; i++) {
+
+        Random random = new Random();
+        for (int i=0; i<=9; i++) {
             for (int j=0; j<=7; j++) {
                 TextView tv = (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
+                GridLayout.LayoutParams lp = (GridLayout.LayoutParams) tv.getLayoutParams();
                 tv.setBackgroundColor(Color.GREEN);
                 tv.setOnClickListener(this::onClickTV);
-
-                GridLayout.LayoutParams lp = (GridLayout.LayoutParams) tv.getLayoutParams();
                 lp.rowSpec = GridLayout.spec(i);
                 lp.columnSpec = GridLayout.spec(j);
 
@@ -72,12 +77,16 @@ public class MainActivity extends AppCompatActivity {
         int n = findIndexOfCellTextView(tv);
         int i = n / COLUMN_COUNT;
         int j = n % COLUMN_COUNT;
-        tv.setText(String.valueOf(i) + String.valueOf(j));
-        if (tv.getCurrentTextColor() == Color.GRAY) {
-            tv.setTextColor(Color.GREEN);
-            tv.setBackgroundColor(Color.parseColor("lime"));
-        } else {
+        Block b = board.getBlock(i, j);
+        if (b.isBomb()) {
+            tv.setText("\uD83D\uDCA3");
+            tv.setBackgroundColor(Color.RED);
+        } else if(!b.isBomb() && b.getValue() != 0) {
+            tv.setText(Integer.toString(b.getValue()));
             tv.setTextColor(Color.GRAY);
+            tv.setBackgroundColor(Color.LTGRAY);
+        }
+        else if(!b.isBomb() && b.getValue() == 0){
             tv.setBackgroundColor(Color.LTGRAY);
         }
         onClickStart(view);
