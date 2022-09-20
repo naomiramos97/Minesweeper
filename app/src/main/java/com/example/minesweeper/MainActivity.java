@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagMode = false;
     private boolean digMode = true;
     int flagsPlaced = 0;
+    private boolean lost = false;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         runTimer();
+
     }
 
     private int findIndexOfCellTextView(TextView tv) {
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             if (b.isBomb()) {
                 tv.setText("\uD83D\uDCA3");
                 tv.setBackgroundColor(Color.RED);
+                lost = true;
             } else if(!b.isBomb() && b.getValue() != 0) {
                 tv.setText(Integer.toString(b.getValue()));
                 tv.setTextColor(Color.GRAY);
