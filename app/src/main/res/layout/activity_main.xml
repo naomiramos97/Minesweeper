@@ -41,7 +41,7 @@
                 android:layout_marginBottom="2dp"
                 android:width="40dp"
                 android:height="40dp"
-                android:text="0"
+                android:text="4"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_column="1"
@@ -85,25 +85,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/textView12"
-            app:backgroundTint="@color/white"
-            android:layout_width="93dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_x="163dp"
-            android:layout_y="501dp"
-            android:width="35dp"
-            android:height="35dp"
-            android:text="@string/flag"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            app:layout_column="4"
-            app:layout_row="11" />
-
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/gridLayout01"
             android:layout_width="380dp"
@@ -117,9 +98,27 @@
             android:layout_y="32dp"
             app:columnCount="8"
             app:rowCount="10"></androidx.gridlayout.widget.GridLayout>
+
+        <Button
+            android:id="@+id/textView12"
+            android:text="@string/pick"
+            app:backgroundTint="@color/white"
+            android:layout_width="93dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_x="163dp"
+            android:layout_y="501dp"
+            android:width="35dp"
+            android:height="35dp"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            app:layout_column="4"
+            app:layout_row="11" />
+
     </AbsoluteLayout>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

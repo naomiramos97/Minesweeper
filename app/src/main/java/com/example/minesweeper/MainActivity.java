@@ -1,5 +1,6 @@
 package com.example.minesweeper;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
@@ -18,7 +20,10 @@ public class MainActivity extends AppCompatActivity {
     private int clock = 0;
     private boolean running = false;
     private static final int COLUMN_COUNT = 8;
-    private static final int BOMB_COUNT = 4;
+    private static final int FLAG_COUNT = 4;
+    private boolean flagMode = false;
+    private boolean digMode = true;
+    int flagsPlaced = 0;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -36,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button btn = (Button) findViewById(R.id.textView12);
+        btn.setOnClickListener(this::onClickButton);
+
+        final TextView flagCount = (TextView) findViewById(R.id.textView10);
+        flagCount.setText(Integer.toString(FLAG_COUNT));
+
         cell_tvs = new ArrayList<TextView>();
         GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
         LayoutInflater li = LayoutInflater.from(this);
@@ -47,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 GridLayout.LayoutParams lp = (GridLayout.LayoutParams) tv.getLayoutParams();
                 tv.setBackgroundColor(Color.GREEN);
                 tv.setOnClickListener(this::onClickTV);
+
                 lp.rowSpec = GridLayout.spec(i);
                 lp.columnSpec = GridLayout.spec(j);
 
@@ -74,22 +86,53 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickTV(View view) {
         TextView tv = (TextView) view;
+        final TextView flagCounts = (TextView) findViewById(R.id.textView10);
         int n = findIndexOfCellTextView(tv);
         int i = n / COLUMN_COUNT;
         int j = n % COLUMN_COUNT;
         Block b = board.getBlock(i, j);
-        if (b.isBomb()) {
-            tv.setText("\uD83D\uDCA3");
-            tv.setBackgroundColor(Color.RED);
-        } else if(!b.isBomb() && b.getValue() != 0) {
-            tv.setText(Integer.toString(b.getValue()));
-            tv.setTextColor(Color.GRAY);
-            tv.setBackgroundColor(Color.LTGRAY);
+
+        if(flagMode && !b.isFlagged()){
+            tv.setText("\uD83D\uDEA9");
+            b.setFlagged(true);
+            flagsPlaced++;
+            flagCounts.setText(Integer.toString(FLAG_COUNT - flagsPlaced));
         }
-        else if(!b.isBomb() && b.getValue() == 0){
-            tv.setBackgroundColor(Color.LTGRAY);
+        else if(flagMode && b.isFlagged()){
+            tv.setText(null);
+            b.setFlagged(false);
+            flagsPlaced--;
+            flagCounts.setText(Integer.toString(FLAG_COUNT - flagsPlaced));
         }
+        else if(digMode){
+            if (b.isBomb()) {
+                tv.setText("\uD83D\uDCA3");
+                tv.setBackgroundColor(Color.RED);
+            } else if(!b.isBomb() && b.getValue() != 0) {
+                tv.setText(Integer.toString(b.getValue()));
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+            }
+            else if(!b.isBomb() && b.getValue() == 0){
+                tv.setBackgroundColor(Color.LTGRAY);
+            }
+        }
+
         onClickStart(view);
+    }
+
+    public void onClickButton(View view){
+        TextView tv = (TextView) view;
+        if(flagMode){
+            tv.setText("\u26CF");
+            flagMode = false;
+            digMode = true;
+        }
+        else if(digMode){
+            tv.setText("\uD83D\uDEA9");
+            flagMode = true;
+            digMode = false;
+        }
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {

@@ -75,6 +75,18 @@ public class Board {
         return n;
     }
 
+    public List<Block> getAllBombs(){
+        List<Block> bombs = new ArrayList<Block>();
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 8; j++){
+                if(blocks.get(i).get(j).isBomb()){
+                    bombs.add(blocks.get(i).get(j));
+                }
+            }
+        }
+        return bombs;
+    }
+
     public List<List<Block>> getBlocks() {
         return blocks;
     }
